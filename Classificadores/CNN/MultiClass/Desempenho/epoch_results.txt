@@ -1,0 +1,10 @@
+Epoch 1/10, Loss: 1.4549, Train Acc: 0.4363, Test Acc: 0.4424
+Epoch 2/10, Loss: 1.0650, Train Acc: 0.5991, Test Acc: 0.5600
+Epoch 3/10, Loss: 0.8672, Train Acc: 0.6893, Test Acc: 0.6282
+Epoch 4/10, Loss: 0.6322, Train Acc: 0.7818, Test Acc: 0.5835
+Epoch 5/10, Loss: 0.5244, Train Acc: 0.8278, Test Acc: 0.5200
+Epoch 6/10, Loss: 0.4245, Train Acc: 0.8496, Test Acc: 0.6447
+Epoch 7/10, Loss: 0.3136, Train Acc: 0.8909, Test Acc: 0.5718
+Epoch 8/10, Loss: 0.2695, Train Acc: 0.9127, Test Acc: 0.5482
+Epoch 9/10, Loss: 0.2346, Train Acc: 0.9210, Test Acc: 0.6118
+Epoch 10/10, Loss: 0.1864, Train Acc: 0.9340, Test Acc: 0.5765
