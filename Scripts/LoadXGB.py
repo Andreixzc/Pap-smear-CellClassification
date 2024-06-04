@@ -4,11 +4,11 @@ from joblib import load
 # Esse script carrega os dois modelos treinados, e testa eles com uma instância do dataset.
 # Lembrar que a saida do binario vai ser sempre 0 ou 1, (tem ou não a doença), já a saída do multiclasse vai ser um número de 0 a 5, representando a classe da doença.
 # 0 - ASC-H 
-# 1- ASC-US 
-# 2- HSIL 
-# 3- LSIL 
+# 1 - ASC-US 
+# 2 - HSIL 
+# 3 - LSIL 
 # 4 - Negative for intraepithelial lesion 
-# 5- SCC 
+# 5 - SCC 
 
 # Carregar os modelos pré-treinados
 model_binario = load('../Classificadores/ModelosTreinados/xgboostBinary_model.pkl')
