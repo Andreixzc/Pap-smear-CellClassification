@@ -38,7 +38,7 @@ class CustomDataset(Dataset):
         return image, label
 
 # Caminho para o arquivo CSV
-csv_file = '../../../Csvs/image_paths_labels.csv'
+csv_file = '../../../Csvs/image_paths_labelsFix.csv'
 
 # Defina as transformações para o pré-processamento das imagens
 transform = transforms.Compose([
