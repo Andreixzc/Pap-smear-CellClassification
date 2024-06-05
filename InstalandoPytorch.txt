@@ -1,0 +1,2 @@
+Linux com conda: 
+conda install pytorch torchvision torchaudio cpuonly -c pytorch
