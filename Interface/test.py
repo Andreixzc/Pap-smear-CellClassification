@@ -34,6 +34,12 @@ class ImageViewer:
         self.original_button = Button(self.frame_left, text="Original", command=self.show_image)
         self.original_button.pack(side=BOTTOM)
         
+        self.zoom_in_button = Button(self.frame_left, text="Zoom In", command=lambda: self.zoom_image(1.2))
+        self.zoom_in_button.pack(side=TOP)
+        
+        self.zoom_out_button = Button(self.frame_left, text="Zoom Out", command=lambda: self.zoom_image(0.8))
+        self.zoom_out_button.pack(side=TOP)
+        
         self.hu_moments_label = Label(self.frame_right, text="Hu Moments:")
         self.hu_moments_label.pack()
         
@@ -46,6 +52,7 @@ class ImageViewer:
         
         self.current_image_index = 0
         self.current_canvas = None
+        self.zoom_scale = 1.0
         self.show_image()
         
     def get_image_paths(self, directories):
@@ -69,8 +76,8 @@ class ImageViewer:
             self.current_image_index = index
         image_path = self.image_paths[self.current_image_index]
         self.image = Image.open(image_path)
-        image = self.image.resize((800, 600), Image.Resampling.LANCZOS)
-        self.photo = ImageTk.PhotoImage(image)
+        self.display_image = self.image.resize((int(800 * self.zoom_scale), int(600 * self.zoom_scale)), Image.Resampling.LANCZOS)
+        self.photo = ImageTk.PhotoImage(self.display_image)
         
         self.image_label.config(image=self.photo)
         self.image_label.image = self.photo
@@ -80,8 +87,8 @@ class ImageViewer:
 
     def show_gray_image(self):
         image = self.image.convert("L")
-        image = image.resize((800, 600), Image.Resampling.LANCZOS)
-        self.photo = ImageTk.PhotoImage(image)
+        self.display_image = image.resize((int(800 * self.zoom_scale), int(600 * self.zoom_scale)), Image.Resampling.LANCZOS)
+        self.photo = ImageTk.PhotoImage(self.display_image)
         
         self.image_label.config(image=self.photo)
         self.image_label.image = self.photo
@@ -92,12 +99,18 @@ class ImageViewer:
     def prev_image(self):
         if self.current_image_index > 0:
             self.current_image_index -= 1
+            self.zoom_scale = 1.0
             self.show_image(self.current_image_index)
     
     def next_image(self):
         if self.current_image_index < len(self.image_paths) - 1:
             self.current_image_index += 1
+            self.zoom_scale = 1.0
             self.show_image(self.current_image_index)
+    
+    def zoom_image(self, scale_factor):
+        self.zoom_scale *= scale_factor
+        self.show_image(self.current_image_index)
     
     def show_histograms(self):
         gray_image = self.image.convert("L")
