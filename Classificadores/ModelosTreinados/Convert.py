@@ -1,7 +1,12 @@
+import os
 import xgboost as xgb
 import pickle
 import torch
-from efficientnet_pytorch import EfficientNet
+import torch.nn as nn
+from torchvision import models
+
+# Create the directory for the converted models if it doesn't exist
+os.makedirs('convertedModels', exist_ok=True)
 
 # Convert XGBoost models to JSON format
 def convert_xgb_model(input_path, output_path):
@@ -9,14 +14,22 @@ def convert_xgb_model(input_path, output_path):
         model = pickle.load(f)
     model.save_model(output_path)
 
-# Convert XGBoost models
-convert_xgb_model('xgboostMulti_model.pkl', 'xgboostMulti_model.json')
-convert_xgb_model('xgboostBinary_model.pkl', 'xgboostBinary_model.json')
+# Convert XGBoost models and save to 'convertedModels' folder
+convert_xgb_model('xgboostMulti_model.pkl', 'convertedModels/xgboostMulti_model.json')
+convert_xgb_model('xgboostBinary_model.pkl', 'convertedModels/xgboostBinary_model.json')
 
-# Convert PyTorch models to TorchScript format
-def convert_effnet_model(input_path, output_path):
+# Function to convert and save EfficientNet model
+def convert_effnet_model(input_path, output_path, num_classes, binary=False):
     # Load the model
-    model = EfficientNet.from_name('efficientnet-b0')
+    model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.IMAGENET1K_V1)
+    
+    # Modify the classifier to match the number of classes
+    if binary:
+        model.classifier[1] = nn.Linear(model.classifier[1].in_features, 1)
+    else:
+        model.classifier[1] = nn.Linear(model.classifier[1].in_features, num_classes)
+    
+    # Load the trained weights
     model.load_state_dict(torch.load(input_path))
     model.eval()
 
@@ -27,8 +40,9 @@ def convert_effnet_model(input_path, output_path):
     traced_script_module = torch.jit.trace(model, example_input)
     traced_script_module.save(output_path)
 
-# Convert and save binary classification model
-convert_effnet_model('Effnet_Binary_Weights.pth', 'Effnet_Binary_Weights.pt')
+# Convert and save binary classification model to 'convertedModels' folder
+convert_effnet_model('Effnet_Binary_Weights.pth', 'convertedModels/Effnet_Binary_Weights.pt', num_classes=1, binary=True)
 
-# Convert and save multi-class classification model
-convert_effnet_model('Effnet_Multi_Weights.pth', 'Effnet_Multi_Weights.pt')
+# Convert and save multi-class classification model to 'convertedModels' folder
+# Specify the number of classes in your multi-class problem
+convert_effnet_model('Effnet_Multi_Weights.pth', 'convertedModels/Effnet_Multi_Weights.pt', num_classes=6, binary=False)
