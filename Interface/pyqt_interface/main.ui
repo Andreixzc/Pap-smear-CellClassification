@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1151</width>
+    <height>859</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="frameContentAfterImport">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>-10</y>
+      <width>1141</width>
+      <height>811</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QTableWidget" name="tableChannel">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>600</y>
+       <width>401</width>
+       <height>192</height>
+      </rect>
+     </property>
+     <column>
+      <property name="text">
+       <string>Channel G</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Channel H</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Channel S</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Channel V</string>
+      </property>
+     </column>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxImages">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>761</width>
+       <height>571</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Imagens</string>
+     </property>
+     <widget class="QWidget" name="hsvHistogram" native="true">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>350</y>
+        <width>371</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <widget class="QLabel" name="hsvHistogramImageLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>351</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="grayscaleHistogram" native="true">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>350</y>
+        <width>371</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <widget class="QLabel" name="grayscaleHistogramLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>351</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>731</width>
+        <height>311</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="originalTab">
+       <attribute name="title">
+        <string>Original</string>
+       </attribute>
+       <widget class="QGraphicsView" name="originalImageView_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>701</width>
+          <height>261</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="originalImageLabel">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>681</width>
+          <height>241</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="greyscaleTab">
+       <attribute name="title">
+        <string>Grayscale</string>
+       </attribute>
+       <widget class="QGraphicsView" name="grayscaleImageView">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>701</width>
+          <height>261</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="greyscaleImageLabel">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>19</y>
+          <width>681</width>
+          <height>241</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupMatrixAll">
+     <property name="geometry">
+      <rect>
+       <x>790</x>
+       <y>20</y>
+       <width>351</width>
+       <height>781</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Co-occurrence Matrix </string>
+     </property>
+     <widget class="QGroupBox" name="groupMatrix01">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>321</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Matrix (01x01)</string>
+      </property>
+      <widget class="QTableWidget" name="tableMatrix01">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text">
+         <string>Contrast</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Entropy</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Homogeneity</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QFrame" name="frameMatrix01">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>20</y>
+         <width>121</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QGraphicsView" name="imageMatrix01">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="matrix01ImageLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupMatrix02">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>220</y>
+        <width>321</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Matrix (02x02)</string>
+      </property>
+      <widget class="QTableWidget" name="tableMatrix02">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text">
+         <string>Contrast</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Entropy</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Homogeneity</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QFrame" name="frameMatrix02">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>20</y>
+         <width>121</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QGraphicsView" name="imageMatrix02">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="matrix02ImageLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupMatrix04">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>410</y>
+        <width>321</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Matrix (04x04)</string>
+      </property>
+      <widget class="QTableWidget" name="tableMatrix05_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text">
+         <string>Contrast</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Entropy</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Homogeneity</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QFrame" name="frameMatrix03">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>20</y>
+         <width>121</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QGraphicsView" name="imageMatrix03">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="matrix04ImageLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupMatrix05">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>590</y>
+        <width>321</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Matrix (16x16)</string>
+      </property>
+      <widget class="QTableWidget" name="tableMatrix05">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>301</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text">
+         <string>Contrast</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Entropy</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Homogeneity</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QFrame" name="frameMatrix04">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>20</y>
+         <width>121</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QGraphicsView" name="imageMatrix04">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="matrix16ImageLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>121</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1151</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuImport">
+    <property name="title">
+     <string>Import</string>
+    </property>
+    <addaction name="actionDataset"/>
+   </widget>
+   <addaction name="menuImport"/>
+  </widget>
+  <action name="actionDataset">
+   <property name="text">
+    <string>Dataset</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
