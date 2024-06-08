@@ -54,7 +54,7 @@ class InterfaceUtils:
                             # Verifica se o pixel vizinho está dentro da imagem
                             if 0 <= new_row < rows and 0 <= new_col < cols:
                                 # Incrementa a entrada correspondente na matriz de co-ocorrência
-                                co_matrix[quantized_image[i, j], quantized_image[new_row, new_col]] += 1
+                                co_matrix[quantized_image[i, j], quantized_image[i, j]] += 1  # Apenas o valor [i][i] é atualizado
                 # Normaliza a matriz de co-ocorrência para que a soma de todos os elementos seja 1
                 co_matrix = co_matrix.astype(np.float64)
                 co_matrix /= np.sum(co_matrix)
