@@ -30,48 +30,54 @@ class InterfaceUtils:
 
         return all_moments
 
+    @staticmethod  
+    def compute_co_occurrence_matrix(img, distance):
+        co_occurrence_matrix = np.zeros((16, 16), dtype=np.int32)
 
+        limit = img.shape[1] - distance
+        for y in range(img.shape[0]):
+            for x in range(limit):
+                g1 = img[y, x] // (256 // 16)
+                g2 = img[y, x + distance] // (256 // 16)
+                co_occurrence_matrix[g1, g2] += 1
 
-    @staticmethod
-    def co_occurrence_matrices(image, levels=16, distances=[1], angles=[0]):
-        # Quantize a imagem para o número de níveis de cinza especificado
-        quantized_image = np.floor(image / (256 / levels)).astype(np.uint8)
-        
-        # Inicializar as matrizes de co-ocorrência para cada ângulo e distância
-        co_occurrence_matrices = {}
-        for distance in distances:
-            for angle in angles:
-                co_matrix = np.zeros((levels, levels), dtype=np.uint32)
-                rows, cols = quantized_image.shape
-                for i in range(rows):
-                    for j in range(cols):
-                        for d in range(1, distance + 1):
-                            # Calcula as coordenadas do pixel vizinho
-                            row_offset = int(d * np.sin(angle))
-                            col_offset = int(d * np.cos(angle))
-                            new_row = i + row_offset
-                            new_col = j + col_offset
-                            # Verifica se o pixel vizinho está dentro da imagem
-                            if 0 <= new_row < rows and 0 <= new_col < cols:
-                                # Incrementa a entrada correspondente na matriz de co-ocorrência
-                                co_matrix[quantized_image[i, j], quantized_image[i, j]] += 1  # Apenas o valor [i][i] é atualizado
-                # Normaliza a matriz de co-ocorrência para que a soma de todos os elementos seja 1
-                co_matrix = co_matrix.astype(np.float64)
-                co_matrix /= np.sum(co_matrix)
-                co_occurrence_matrices[(distance, angle)] = co_matrix
-        return co_occurrence_matrices
+        return co_occurrence_matrix
 
     @staticmethod
-    def haralick_descriptors(co_occurrence_matrix):
-        # Normaliza a matriz de co-ocorrência para que a soma de todos os elementos seja 1
-        co_occurrence_matrix_normalized = co_occurrence_matrix / np.sum(co_occurrence_matrix)
-        
-        # Calcula as propriedades da matriz de co-ocorrência
-        contrast = np.sum(np.multiply(np.square(np.arange(co_occurrence_matrix.shape[0]) - np.arange(co_occurrence_matrix.shape[1])), co_occurrence_matrix_normalized))
-        entropy = -np.sum(co_occurrence_matrix_normalized * np.log2(co_occurrence_matrix_normalized + 1e-10))
-        homogeneity = np.sum(co_occurrence_matrix_normalized / (1 + np.abs(np.arange(co_occurrence_matrix.shape[0]) - np.arange(co_occurrence_matrix.shape[1]))))
+    def calculate_homogeneity(co_matrix):
+        homogeneity = 0.0
 
-        return entropy, homogeneity, contrast
+        size = co_matrix.shape[0]
+        for i in range(size):
+            for j in range(size):
+                homogeneity += co_matrix[i, j] / (1.0 + abs(i - j))
+
+        return homogeneity
+    
+
+    @staticmethod
+    def calculate_contrast(co_matrix):
+        contrast = 0.0
+
+        size = co_matrix.shape[0]
+        for i in range(size):
+            for j in range(size):
+                contrast += (i - j) * (i - j) * co_matrix[i, j]
+
+        return contrast
+    
+    @staticmethod
+    def calculate_entropy(co_matrix):
+        entropy = 0.0
+
+        size = co_matrix.shape[0]
+        for i in range(size):
+            for j in range(size):
+                value = co_matrix[i, j]
+                if value > 0:
+                    entropy -= value * np.log2(value)
+
+        return entropy
 
         
 
