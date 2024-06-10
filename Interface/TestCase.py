@@ -10,15 +10,16 @@ print(interface.extract_hu_moments(image))
 # Carregar a imagem usando OpenCV
 image = cv2.imread("5.png", cv2.IMREAD_GRAYSCALE)
 
-# Specify distances
+# Distancias da matriz
 distances = [1, 2, 4, 8, 16, 32]
 
-# Calculate co-occurrence matrices
+# Calculando matriz
 co_occurrence_matrices = {}
 for distance in distances:
     co_occurrence_matrices[distance] = interface.compute_co_occurrence_matrix(image, distance)
 
-# Calculate Haralick features for each co-occurrence matrix
+# Calculando Descritores de homogeniedade, contraste e entropia pra cada uma das matrizes.
+#
 haralick_features = {}
 for distance, co_occurrence_matrix in co_occurrence_matrices.items():
     features = {
@@ -31,3 +32,6 @@ for distance, co_occurrence_matrix in co_occurrence_matrices.items():
 # Print Haralick features
 for distance, features in haralick_features.items():
     print(f"Haralick features for distance {distance}:\n{features}")
+
+# Tem que calcular a matriz antes pra depois calcular os descritores. Não sei ainda se esse é o jeito certo de calcular, porque 
+# o gpt fez dois códigos. Mas dessa forma ai ficou igual a do joão, qualquer coisa mudamos pro jeito anterior que ta no 'Corrency2.py'.
