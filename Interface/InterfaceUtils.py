@@ -97,7 +97,7 @@ class InterfaceUtils:
         else:
             raise ValueError("Imagem com número de canais não suportado")
 
-        hist = cv2.calcHist([gray_image], [0], None, [256], [0, 256])
+        hist = cv2.calcHist([gray_image], [0], None, [16], [0, 256])
         hist = hist.flatten()
         return hist
     
