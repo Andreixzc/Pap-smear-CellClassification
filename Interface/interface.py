@@ -1,8 +1,8 @@
 import sys
 import os
-from PyQt6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QProgressBar, QVBoxLayout, QFileDialog, QMainWindow, QMessageBox
+from PyQt6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QProgressBar, QVBoxLayout, QFileDialog, QMainWindow, QMessageBox, QPushButton
 from PyQt6.QtGui import QPixmap, QImage
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6 import uic
 import cv2
 import numpy as np
@@ -71,10 +71,18 @@ class UI(QMainWindow):
         
         # Load UI File
         uic.loadUi("main.ui", self)
-        
 
         # Define our widgets
         self.datasetPath = self.actionDataset.triggered.connect(self.triggerImportButton)
+
+        self.zoomInButton = self.findChild(QPushButton, 'zoomInButton')
+        self.zoomOutButton = self.findChild(QPushButton, 'zoomOutButton')
+        self.originalImageLabel = self.findChild(QLabel, 'originalImageLabel')
+        self.grayscaleImageLabel = self.findChild(QLabel, 'greyscaleImageLabel')
+
+        # Connect buttons to methods
+        self.zoomInButton.clicked.connect(self.zoom_in)
+        self.zoomOutButton.clicked.connect(self.zoom_out)
 
         self.frameContentAfterImport.hide()
 
@@ -268,8 +276,14 @@ class UI(QMainWindow):
         dialog.move(self.rect().center())
         dialog.exec()
         return dialog.dialog_accepted
+    
+    def zoom_in(self):
+        self.grayscaleImageView.scale(1.05, 1.05)
+        self.originalImageView.scale(1.05, 1.05)
 
-
+    def zoom_out(self):
+        self.grayscaleImageView.scale(0.95, 0.95)
+        self.originalImageView.scale(0.95, 0.95)
 
 
 if __name__ == "__main__":

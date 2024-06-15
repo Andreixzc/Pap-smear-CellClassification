@@ -186,7 +186,7 @@
        </widget>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="zoomInButton">
       <property name="geometry">
        <rect>
         <x>390</x>
@@ -199,7 +199,7 @@
        <string>Zoom in</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="zoomOutButton">
       <property name="geometry">
        <rect>
         <x>390</x>
@@ -760,7 +760,7 @@
      <x>0</x>
      <y>0</y>
      <width>1276</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuImport">
