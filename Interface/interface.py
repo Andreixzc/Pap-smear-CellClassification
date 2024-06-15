@@ -120,12 +120,7 @@ class UI(QMainWindow):
         # Carregar imagem principal
         pixmap = QPixmap(image_path)
         if not pixmap.isNull():
-            # self.originalImageLabel.setPixmap(pixmap)
-            # self.originalImageLabel.setScaledContents(True)
-            # self.originalImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.originalScene.addPixmap(pixmap)
-            # self.originalScene.setScaledContents(True)
-            # self.originalScene.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.originalImageView.setScene(self.originalScene)
         else:
             print("Failed to load image:", image_path)
@@ -152,12 +147,7 @@ class UI(QMainWindow):
 
             # Check if pixmap is not null and set it to the label
             if not grayPixmap.isNull():
-                # self.greyscaleImageLabel.setPixmap(grayPixmap)
-                # self.greyscaleImageLabel.setScaledContents(True)
-                # self.greyscaleImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.grayscaleScene.addPixmap(grayPixmap)
-                # self.grayscaleScene.setScaledContents(True)
-                # self.grayscaleScene.setAlignment(Qt.AlignmentFlag.AlignCenter)
                 self.grayscaleImageView.setScene(self.grayscaleScene)
             else:
                 print("Failed to load image:", image_path)
@@ -191,14 +181,14 @@ class UI(QMainWindow):
         for distance, features in haralick_features.items():
             table = self.tables[distance]
             if table:
-                table.setRowCount(1)
-                table.setColumnCount(3)
-                table.setHorizontalHeaderLabels(["Contrast", "Entropy", "Homogeneity"])
+                table.setRowCount(3)
+                table.setColumnCount(1)
+                table.horizontalHeader().setFixedHeight(0)
                 print(f"Distance {distance}: Contrast = {features['Contrast']}, Entropy = {features['Entropy']}, Homogeneity = {features['Homogeneity']}")
 
                 table.setItem(0, 0, QTableWidgetItem(str(features['Contrast'])))
-                table.setItem(0, 1, QTableWidgetItem(str(features['Entropy'])))
-                table.setItem(0, 2, QTableWidgetItem(str(features['Homogeneity'])))
+                table.setItem(1, 0, QTableWidgetItem(str(features['Entropy'])))
+                table.setItem(2, 0, QTableWidgetItem(str(features['Homogeneity'])))
 
     def displayCoOccurrenceMatrix(self, distance, matrix):
         # Normalize the matrix values to the range [0, 255]
@@ -272,7 +262,7 @@ class UI(QMainWindow):
         image = cv2.imread(image_path)
         hist = interface.colorHistogram(image)
         plt.figure()
-        plt.plot(hist)
+        plt.imshow(hist, interpolation='nearest', aspect='auto')
         plt.title('Histograma 2D para H e V')
         plt.xlabel('Valores de V')
         plt.ylabel('Valores de H')
