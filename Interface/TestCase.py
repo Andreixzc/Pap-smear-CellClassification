@@ -7,7 +7,7 @@ imagemOriginal = cv2.imread("5.png")
 imagemOriginalPath = "5.png"
 imagemCinza = cv2.imread("5.png", cv2.IMREAD_GRAYSCALE)
 
-print("Momentos de Hu da imagem:")
+print("Momentos de Hu da imagem????:")
 print(interface.extract_hu_moments(imagemOriginal))
 
 

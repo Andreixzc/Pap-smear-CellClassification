@@ -101,6 +101,7 @@ class UI(QMainWindow):
         histogramaColorido2D = interface.colorHistogram(original_image_path)
 
     def load_image(self, image_path):
+        imagemOriginal = cv2.imread(image_path)
         self.groupBoxImages.setTitle(image_path)
         
         # Carregar imagem principal
@@ -115,8 +116,14 @@ class UI(QMainWindow):
         
         # Carregar imagem em cinza
         imagemCinza = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        imagemOriginal = cv2.imread(image_path)
+        hu_moments = self.showHu_Moments(imagemOriginal)
+        populate_channel_table(self, hu_moments)
         self.plotMatrix(imagemCinza)
         self.loadGrayHistogram(imagemCinza)
+
+
+
         if imagemCinza is None:
             print("Failed to load image:", image_path)
         else:
@@ -156,6 +163,11 @@ class UI(QMainWindow):
             haralick_features[distance] = features
         
         self.populate_tables(haralick_features)
+
+    def showHu_Moments(self, imagemOriginal):
+        hu_moments = interface.extract_hu_moments(imagemOriginal)
+        return hu_moments
+
 
     def populate_tables(self, haralick_features):
         for distance, features in haralick_features.items():
@@ -286,6 +298,29 @@ class UI(QMainWindow):
         dialog.move(self.rect().center())
         dialog.exec()
         return dialog.dialog_accepted
+    
+
+def populate_channel_table(self, hu_moments):
+    table = self.findChild(QTableWidget, "tableChannel")
+    if table:
+        table.setRowCount(7)  # Set 7 rows for 7 Hu moments
+        table.setColumnCount(4)  # Set 4 columns for 4 channels
+
+        table.setHorizontalHeaderLabels(["Channel G", "Channel H", "Channel S", "Channel V"])
+
+        # Populate the table with values
+        for i in range(7):  # Iterate over each Hu moment
+            # Each Hu moment has values for G, H, S, V
+            g_value = hu_moments[i]
+            h_value = hu_moments[i + 7]
+            s_value = hu_moments[i + 14]
+            v_value = hu_moments[i + 21]
+
+            # Insert values into the table
+            table.setItem(i, 0, QTableWidgetItem(f"{g_value:.4f}"))
+            table.setItem(i, 1, QTableWidgetItem(f"{h_value:.4f}"))
+            table.setItem(i, 2, QTableWidgetItem(f"{s_value:.4f}"))
+            table.setItem(i, 3, QTableWidgetItem(f"{v_value:.4f}"))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
