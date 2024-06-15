@@ -143,6 +143,7 @@ class InterfaceUtils:
 
     @staticmethod
     def predict(imagemOriginal,image):
+        #imagemcv2 e path da imagem
         # Extração dos momentos de Hu
         hu_moments = InterfaceUtils.extract_hu_moments(imagemOriginal)
         entrada = np.array(hu_moments).reshape(1, -1)
@@ -187,6 +188,7 @@ class InterfaceUtils:
             output_multi = model_multi(preprocessed_image)
             prediction_multi = torch.argmax(output_multi, dim=1).item()
 
+        
         return {
             "previsao_binario_modelo_xgboost": previsao_binario,
             "previsao_multiclasse_modelo_xgboost": previsao_multiclasse,

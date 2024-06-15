@@ -33,9 +33,10 @@ class ProgressDialog(QDialog):
         layout.addWidget(self.label)
         layout.addWidget(self.progress_bar)
         layout.addWidget(self.button_box)
-
         self.progress_bar.hide()  # Hide progress bar initially
     
+
+
     def status_window(self):
         return self.button_box.accepted()
 
@@ -63,6 +64,8 @@ class ProgressDialog(QDialog):
     def accept(self):
         super().accept()
         QMessageBox.information(self, "Success", "Dataset loaded successfully")
+
+currentImg = ""
 
 class UI(QMainWindow):
     def __init__(self):
@@ -95,17 +98,48 @@ class UI(QMainWindow):
             8: self.findChild(QTableWidget, "tableMatrix05_5"),  # Matrix (08x08)
             16: self.findChild(QTableWidget, "tableMatrix05_7"), # Matrix (16x16)
             32: self.findChild(QTableWidget, "tableMatrix05_8")  # Matrix (32x32)
+            
         }
-
+        self.tables["tableChannel_2"] = self.findChild(QTableWidget, "tableChannel_2")
+        
+        self.predictButton = self.findChild(QPushButton, "predictButton")
+        self.predictButton.clicked.connect(self.predictClass)
         self.show()
 
+    # def predictClass(self):
+    #     print(currentImg)
+    #     img = cv2.imread(currentImg)
+    #     print(interface.predict(img,currentImg))
+
+
+    def predictClass(self):
+        global currentImg
+        img = cv2.imread(currentImg)
+        result = interface.predict(img, currentImg)
+        previsao_binario = result["previsao_binario_modelo_xgboost"]
+        previsao_multiclasse = result["previsao_multiclasse_modelo_xgboost"]
+        prediction_binary = result["previsao_binario_modelo_effnet"]
+        prediction_multi = result["previsao_multiclasse_modelo_effnet"]
+
+        # Update tableChannel_2 with the predictions
+        table = self.tables["tableChannel_2"]
+        if table:
+            table.setItem(0, 0, QTableWidgetItem(str(prediction_binary)))  # EFF NET 2
+            table.setItem(1, 0, QTableWidgetItem(str(prediction_multi)))   # EFF NET 6
+            table.setItem(2, 0, QTableWidgetItem(str(previsao_binario)))   # XGBOOST
+            table.setItem(3, 0, QTableWidgetItem(str(previsao_multiclasse)))  # XGBOOST 6
+
+
+
     def initProcessing(self, dataset_path):
+        global currentImg
         files = [f for f in os.listdir(dataset_path) if os.path.isfile(os.path.join(dataset_path, f))]
         for file in files:
             print(dataset_path +"/"+ file)
         
         # Load and display the image
         image_path = "5.png"  # Change this to the path of your image
+        currentImg = image_path
         self.load_image(image_path)
 
     def populateInterface(self, original_image_path):
