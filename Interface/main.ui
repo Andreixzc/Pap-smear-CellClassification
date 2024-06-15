@@ -133,7 +133,7 @@
        <attribute name="title">
         <string>Original</string>
        </attribute>
-       <widget class="QGraphicsView" name="originalImageView_2">
+       <widget class="QGraphicsView" name="originalImageView">
         <property name="geometry">
          <rect>
           <x>10</x>

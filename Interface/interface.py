@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QProgressBar, QVBoxLayout, QFileDialog, QMainWindow, QMessageBox, QPushButton
+from PyQt6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QProgressBar, QVBoxLayout, QFileDialog, QMainWindow, QMessageBox, QPushButton, QTableWidget, QTableWidgetItem, QGraphicsScene
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6 import uic
@@ -8,8 +8,8 @@ import cv2
 import numpy as np
 from InterfaceUtils import InterfaceUtils
 from matplotlib import pyplot as plt
-interface = InterfaceUtils()
 
+interface = InterfaceUtils()
 
 class ProgressDialog(QDialog):
     def __init__(self, parent=None):
@@ -38,7 +38,6 @@ class ProgressDialog(QDialog):
     
     def status_window(self):
         return self.button_box.accepted()
-        
 
     def show_progress_bar(self):
         self.dialog_accepted = True
@@ -49,7 +48,7 @@ class ProgressDialog(QDialog):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_progress)
         self.timer.start(50)  # Update progress every 50 milliseconds
-        
+
     def update_progress(self):
         self.progress += 1
         self.progress_bar.setValue(self.progress)
@@ -68,7 +67,6 @@ class ProgressDialog(QDialog):
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-        
         # Load UI File
         uic.loadUi("main.ui", self)
 
@@ -84,14 +82,25 @@ class UI(QMainWindow):
         self.zoomInButton.clicked.connect(self.zoom_in)
         self.zoomOutButton.clicked.connect(self.zoom_out)
 
+        self.originalScene = QGraphicsScene()
+        self.grayscaleScene = QGraphicsScene()
+
         self.frameContentAfterImport.hide()
 
+        # Reference your table widgets here, after loading the UI
+        self.tables = {
+            1: self.findChild(QTableWidget, "tableMatrix05_6"),  # Matrix (01x01)
+            2: self.findChild(QTableWidget, "tableMatrix05_2"),  # Matrix (02x02)
+            4: self.findChild(QTableWidget, "tableMatrix05_3"),  # Matrix (04x04)
+            8: self.findChild(QTableWidget, "tableMatrix05_5"),  # Matrix (08x08)
+            16: self.findChild(QTableWidget, "tableMatrix05_7"), # Matrix (16x16)
+            32: self.findChild(QTableWidget, "tableMatrix05_8")  # Matrix (32x32)
+        }
 
         self.show()
 
-
     def initProcessing(self, dataset_path):
-        files = [f for f in os.listdir(dataset_path) if os.path.isfile(f)]
+        files = [f for f in os.listdir(dataset_path) if os.path.isfile(os.path.join(dataset_path, f))]
         for file in files:
             print(dataset_path +"/"+ file)
         
@@ -99,31 +108,37 @@ class UI(QMainWindow):
         image_path = "5.png"  # Change this to the path of your image
         self.load_image(image_path)
 
-    
-    def populateInterface (self, original_image_path):
+    def populateInterface(self, original_image_path):
         imagemCinza = cv2.imread(original_image_path, cv2.IMREAD_GRAYSCALE)
         histogramaCinza = interface.grayHistogram(imagemCinza)
         histogramaColorido2D = interface.colorHistogram(original_image_path)
-    
+
     def load_image(self, image_path):
+        imagemOriginal = cv2.imread(image_path)
         self.groupBoxImages.setTitle(image_path)
-        
         
         # Carregar imagem principal
         pixmap = QPixmap(image_path)
         if not pixmap.isNull():
-            self.originalImageLabel.setPixmap(pixmap)
-            self.originalImageLabel.setScaledContents(True)
-            self.originalImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            # self.originalImageLabel.setPixmap(pixmap)
+            # self.originalImageLabel.setScaledContents(True)
+            # self.originalImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.originalScene.addPixmap(pixmap)
+            # self.originalScene.setScaledContents(True)
+            # self.originalScene.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.originalImageView.setScene(self.originalScene)
         else:
             print("Failed to load image:", image_path)
         self.loadHistogram(image_path)
         
-        
         # Carregar imagem em cinza
         imagemCinza = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        imagemOriginal = cv2.imread(image_path)
+        hu_moments = self.showHu_Moments(imagemOriginal)
+        populate_channel_table(self, hu_moments)
         self.plotMatrix(imagemCinza)
         self.loadGrayHistogram(imagemCinza)
+
         if imagemCinza is None:
             print("Failed to load image:", image_path)
         else:
@@ -137,23 +152,53 @@ class UI(QMainWindow):
 
             # Check if pixmap is not null and set it to the label
             if not grayPixmap.isNull():
-                self.greyscaleImageLabel.setPixmap(grayPixmap)
-                self.greyscaleImageLabel.setScaledContents(True)
-                self.greyscaleImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                # self.greyscaleImageLabel.setPixmap(grayPixmap)
+                # self.greyscaleImageLabel.setScaledContents(True)
+                # self.greyscaleImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.grayscaleScene.addPixmap(grayPixmap)
+                # self.grayscaleScene.setScaledContents(True)
+                # self.grayscaleScene.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.grayscaleImageView.setScene(self.grayscaleScene)
             else:
                 print("Failed to load image:", image_path)
-        #self.loadGrayHistogram(imagemCinza)
 
     def plotMatrix(self, imagemCinza):
-        # Distancias da matriz
+        # Distances for the co-occurrence matrices
         distances = [1, 2, 4, 8, 16, 32]
 
-        # Calculando matriz
+        # Calculating matrices
         co_occurrence_matrices = {}
         for distance in distances:
             co_occurrence_matrices[distance] = interface.compute_co_occurrence_matrix(imagemCinza, distance)
-            self.displayCoOccurrenceMatrix(distance = distance, matrix = co_occurrence_matrices[distance])
+            self.displayCoOccurrenceMatrix(distance, co_occurrence_matrices[distance])
+            
+        haralick_features = {}
+        for distance, co_occurrence_matrix in co_occurrence_matrices.items():
+            features = {
+                'Homogeneity': interface.calculate_homogeneity(co_occurrence_matrix),
+                'Contrast': interface.calculate_contrast(co_occurrence_matrix),
+                'Entropy': interface.calculate_entropy(co_occurrence_matrix)
+            }
+            haralick_features[distance] = features
+        
+        self.populate_tables(haralick_features)
 
+    def showHu_Moments(self, imagemOriginal):
+        hu_moments = interface.extract_hu_moments(imagemOriginal)
+        return hu_moments
+
+    def populate_tables(self, haralick_features):
+        for distance, features in haralick_features.items():
+            table = self.tables[distance]
+            if table:
+                table.setRowCount(1)
+                table.setColumnCount(3)
+                table.setHorizontalHeaderLabels(["Contrast", "Entropy", "Homogeneity"])
+                print(f"Distance {distance}: Contrast = {features['Contrast']}, Entropy = {features['Entropy']}, Homogeneity = {features['Homogeneity']}")
+
+                table.setItem(0, 0, QTableWidgetItem(str(features['Contrast'])))
+                table.setItem(0, 1, QTableWidgetItem(str(features['Entropy'])))
+                table.setItem(0, 2, QTableWidgetItem(str(features['Homogeneity'])))
 
     def displayCoOccurrenceMatrix(self, distance, matrix):
         # Normalize the matrix values to the range [0, 255]
@@ -196,7 +241,6 @@ class UI(QMainWindow):
             self.matrix32ImageLabel.setPixmap(pixmap)
             self.matrix32ImageLabel.setScaledContents(True)
             self.matrix32ImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            
 
     def loadGrayHistogram(self, imagemCinza):
         hist = interface.grayHistogram(imagemCinza)
@@ -223,7 +267,6 @@ class UI(QMainWindow):
             self.grayscaleHistogramLabel.setPixmap(pixmap)
             self.grayscaleHistogramLabel.setScaledContents(True)
             self.grayscaleHistogramLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        #histogramaColorido2D = interface.colorHistogram(original_image_path)
 
     def loadHistogram(self, image_path):
         image = cv2.imread(image_path)
@@ -252,9 +295,9 @@ class UI(QMainWindow):
             self.hsvHistogramImageLabel.setScaledContents(True)
             self.hsvHistogramImageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-    def triggerImportButton (self):
+    def triggerImportButton(self):
         dataset_path = self.getDatasetFolderName()
-        if (dataset_path != None):
+        if dataset_path:
             self.initProcessing(dataset_path)
         else:
             print("Processamento cancelado...")
@@ -262,33 +305,50 @@ class UI(QMainWindow):
     def getDatasetFolderName(self):
         folderName = QFileDialog.getExistingDirectory(self, caption="Select a folder")
         if folderName:
-            if (self.open_progress_dialog()):
+            if self.open_progress_dialog():
                 self.frameContentAfterImport.show()
             else:
                 folderName = None
-        
-            
         return folderName
 
     def open_progress_dialog(self):
         dialog = ProgressDialog(self)
-        # Move the dialog to the adjusted position
         dialog.move(self.rect().center())
         dialog.exec()
         return dialog.dialog_accepted
-    
-    def zoom_in(self):
-        self.grayscaleImageView.scale(1.05, 1.05)
-        self.originalImageView.scale(1.05, 1.05)
+
 
     def zoom_out(self):
         self.grayscaleImageView.scale(0.95, 0.95)
         self.originalImageView.scale(0.95, 0.95)
 
+    def zoom_in(self):
+        self.grayscaleImageView.scale(1.05, 1.05)
+        self.originalImageView.scale(1.05, 1.05)
+        
+def populate_channel_table(self, hu_moments):
+    table = self.findChild(QTableWidget, "tableChannel")
+    if table:
+        table.setRowCount(7)  # Set 7 rows for 7 Hu moments
+        table.setColumnCount(4)  # Set 4 columns for 4 channels
+
+        table.setHorizontalHeaderLabels(["Channel G", "Channel H", "Channel S", "Channel V"])
+
+        # Populate the table with values
+        for i in range(7):  # Iterate over each Hu moment
+            # Each Hu moment has values for G, H, S, V
+            g_value = hu_moments[i]
+            h_value = hu_moments[i + 7]
+            s_value = hu_moments[i + 14]
+            v_value = hu_moments[i + 21]
+
+            # Insert values into the table
+            table.setItem(i, 0, QTableWidgetItem(f"{g_value:.4f}"))
+            table.setItem(i, 1, QTableWidgetItem(f"{h_value:.4f}"))
+            table.setItem(i, 2, QTableWidgetItem(f"{s_value:.4f}"))
+            table.setItem(i, 3, QTableWidgetItem(f"{v_value:.4f}"))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     UIWindow = UI()
     app.exec()
-
-
