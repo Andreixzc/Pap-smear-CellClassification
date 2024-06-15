@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1585</width>
+    <width>1302</width>
     <height>896</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>580</y>
+       <y>600</y>
        <width>421</width>
        <height>241</height>
       </rect>
@@ -112,7 +112,7 @@
        <x>10</x>
        <y>20</y>
        <width>491</width>
-       <height>571</height>
+       <height>561</height>
       </rect>
      </property>
      <property name="title">
@@ -797,7 +797,7 @@
        <x>530</x>
        <y>20</y>
        <width>381</width>
-       <height>261</height>
+       <height>281</height>
       </rect>
      </property>
      <widget class="QLabel" name="grayscaleHistogramLabel">
@@ -806,7 +806,7 @@
         <x>0</x>
         <y>0</y>
         <width>381</width>
-        <height>261</height>
+        <height>281</height>
        </rect>
       </property>
       <property name="text">
@@ -818,9 +818,9 @@
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>300</y>
+       <y>310</y>
        <width>381</width>
-       <height>261</height>
+       <height>281</height>
       </rect>
      </property>
      <widget class="QLabel" name="hsvHistogramImageLabel">
@@ -829,7 +829,7 @@
         <x>0</x>
         <y>0</y>
         <width>381</width>
-        <height>261</height>
+        <height>281</height>
        </rect>
       </property>
       <property name="text">
@@ -845,7 +845,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1585</width>
+     <width>1302</width>
      <height>22</height>
     </rect>
    </property>
