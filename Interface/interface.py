@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 
 interface = InterfaceUtils()
 currentImg = ""
+dataset = []
 
 class ProgressDialog(QDialog):
     def __init__(self, parent=None):
@@ -119,15 +120,24 @@ class UI(QMainWindow):
 
 
     def nextImage(self):
-        print("Next Image")
+        global currentImg
+        global dataset
+        currentImg = (currentImg+1) % len(dataset)
+        print(f"Next Image: {currentImg}")
+        self.load_image(dataset[currentImg])
 
     def previousImage(self):
-        print("Previous Image")
+        global currentImg
+        global dataset
+        currentImg = (currentImg-1) % len(dataset)
+        print(f"Prev Image: {currentImg}")
+        self.load_image(dataset[currentImg])
 
     def predictClass(self):
         global currentImg
-        img = cv2.imread(currentImg)
-        result = interface.predict(img, currentImg)
+        global dataset
+        img = cv2.imread(dataset[currentImg])
+        result = interface.predict(img, dataset[currentImg])
         previsao_binario = result["previsao_binario_modelo_xgboost"]
         previsao_multiclasse = result["previsao_multiclasse_modelo_xgboost"]
         prediction_binary = result["previsao_binario_modelo_effnet"]
@@ -142,17 +152,25 @@ class UI(QMainWindow):
             table.setItem(3, 0, QTableWidgetItem(str(previsao_multiclasse)))  # XGBOOST 6
 
 
-
+    
     def initProcessing(self, dataset_path):
         global currentImg
-        files = [f for f in os.listdir(dataset_path) if os.path.isfile(os.path.join(dataset_path, f))]
-        for file in files:
-            print(dataset_path +"/"+ file)
+        global dataset
+
+        png_files = []
+        for root, dirs, files in os.walk(dataset_path):
+            for file in files:
+                if file.endswith('.png'):
+                    png_files.append(os.path.join(root, file))
+        # files = [f for f in os.listdir(dataset_path) if os.path.isfile(os.path.join(dataset_path, f))]
+        # for file in files:
+        #     print(dataset_path +"/"+ file)
         
         # Load and display the image
-        image_path = "5.png"  # Change this to the path of your image
-        currentImg = image_path
-        self.load_image(image_path)
+        # image_path = "5.png"  # Change this to the path of your image
+        dataset = png_files
+        currentImg = 0
+        self.load_image(dataset[currentImg])
 
     def populateInterface(self, original_image_path):
         imagemCinza = cv2.imread(original_image_path, cv2.IMREAD_GRAYSCALE)
