@@ -79,14 +79,10 @@ class XGboostWindow(QMainWindow):
 
         pixmap_matbin = QPixmap('../Classificadores/XGB/Binary/Desempenho/confusion_matrix.png')
         pixmap_matsen = QPixmap('../Classificadores/XGB/MultiClass/Desempenho/confusion_matrix.png')
-        pixmap_accbin = QPixmap('../Classificadores/XGB/Binaray/Desempenho/confusion_matrix.png')
-        pixmap_accsen = QPixmap('../Classificadores/XGB/MultiClass/Desempenho/confusion_matrix.png')
 
         # Set the images to the labels
         self.matbin.setPixmap(pixmap_matbin)
         self.matsen.setPixmap(pixmap_matsen)
-        self.accbin.setPixmap(pixmap_accbin)
-        self.accsen.setPixmap(pixmap_accsen)
 
 class EffnetWindow(QMainWindow):
     def __init__(self):
@@ -100,8 +96,8 @@ class EffnetWindow(QMainWindow):
 
         pixmap_matbin = QPixmap('../Classificadores/CNN/Binary/Desempenho/confusion_matrix.png')
         pixmap_matsen = QPixmap('../Classificadores/CNN/MultiClass/Desempenho/confusion_matrix.png')
-        pixmap_accbin = QPixmap('../Classificadores/CNN/Binaray/Desempenho/confusion_matrix.png')
-        pixmap_accsen = QPixmap('../Classificadores/CNN/MultiClass/Desempenho/confusion_matrix.png')
+        pixmap_accbin = QPixmap('../Classificadores/CNN/Binary/Desempenho/train_test_acc.png')
+        pixmap_accsen = QPixmap('../Classificadores/CNN/MultiClass/Desempenho/train_test_acc.png')
 
         # Set the images to the labels
         self.matbin.setPixmap(pixmap_matbin)
@@ -178,26 +174,28 @@ class UI(QMainWindow):
     
 
 
-    def multiClassMapping(valor):
+    def multiClassMapping(self, valor):
         dicionario = {
-            1: "ASC-H",
-            2: "ASC-US",
-            3: "HSIL",
-            4: "LSIL",
-            5: "NEGATIVE",
-            6: "SCC"
+            0: "ASC-H",
+            1: "ASC-US",
+            2: "HSIL",
+            3: "LSIL",
+            4: "NEGATIVE",
+            5: "SCC"
         }
         if valor in dicionario:
+            print(dicionario[valor])
             return dicionario[valor]
         else:
             return "Valor não encontrado"
         
-    def binaryMapping(valor):
+    def binaryMapping(self, valor):
         dicionario = {
             0: "NEGATIVE",
             1: "POSITIVE"
         }
         if valor in dicionario:
+            print(dicionario[valor])
             return dicionario[valor]
         else:
             return "Valor não encontrado"
@@ -226,10 +224,6 @@ class UI(QMainWindow):
             table.setItem(1, 0, QTableWidgetItem(self.multiClassMapping(prediction_multi)))   # EFF NET 6
             table.setItem(2, 0, QTableWidgetItem(self.binaryMapping(previsao_binario)))   # XGBOOST
             table.setItem(3, 0, QTableWidgetItem(self.multiClassMapping(previsao_multiclasse)))  # XGBOOST 6
-            # table.setItem(0, 0, QTableWidgetItem(str(prediction_binary)))  # EFF NET 2
-            # table.setItem(1, 0, QTableWidgetItem(str(prediction_multi)))   # EFF NET 6
-            # table.setItem(2, 0, QTableWidgetItem(str(previsao_binario)))   # XGBOOST
-            # table.setItem(3, 0, QTableWidgetItem(str(previsao_multiclasse)))  # XGBOOST 6
 
 
     
@@ -242,9 +236,6 @@ class UI(QMainWindow):
             for file in files:
                 if file.lower().endswith('.png'):  # case-insensitive check
                     png_files.append(os.path.normpath(os.path.join(root, file)))
-        # files = [f for f in os.listdir(dataset_path) if os.path.isfile(os.path.join(dataset_path, f))]
-        # for file in files:
-        #     print(dataset_path +"/"+ file)
         
         # Load and display the image
         dataset = png_files

@@ -774,17 +774,17 @@
       </property>
       <row>
        <property name="text">
-        <string>EFF NET 2</string>
+        <string>EFFNET 2</string>
        </property>
       </row>
       <row>
        <property name="text">
-        <string>EFF NET 6</string>
+        <string>EFFNET 6</string>
        </property>
       </row>
       <row>
        <property name="text">
-        <string>XGBOOST</string>
+        <string>XGBOOST 2</string>
        </property>
       </row>
       <row>
