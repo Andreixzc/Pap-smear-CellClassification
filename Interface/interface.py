@@ -123,14 +123,14 @@ class UI(QMainWindow):
         global currentImg
         global dataset
         currentImg = (currentImg+1) % len(dataset)
-        print(f"Next Image: {currentImg}")
+        print(f"imagem da vez: {dataset[currentImg]}")
         self.load_image(dataset[currentImg])
 
     def previousImage(self):
         global currentImg
         global dataset
         currentImg = (currentImg-1) % len(dataset)
-        print(f"Prev Image: {currentImg}")
+        print(f"imagem da vez: {dataset[currentImg]}")
         self.load_image(dataset[currentImg])
 
     def predictClass(self):
@@ -167,9 +167,9 @@ class UI(QMainWindow):
         #     print(dataset_path +"/"+ file)
         
         # Load and display the image
-        # image_path = "5.png"  # Change this to the path of your image
         dataset = png_files
         currentImg = 0
+        print(f"imagem da vez: {dataset[currentImg]}")
         self.load_image(dataset[currentImg])
 
     def populateInterface(self, original_image_path):
