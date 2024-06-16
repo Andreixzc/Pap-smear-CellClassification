@@ -196,6 +196,73 @@ class InterfaceUtils:
             "previsao_multiclasse_modelo_effnet": prediction_multi
         }
 
-        
+    @staticmethod
+    def predict2(imagemOriginal, image):
+        # Extract Hu moments
+        hu_moments = InterfaceUtils.extract_hu_moments(imagemOriginal)
+        entrada = np.array(hu_moments).reshape(1, -1)
+
+        # Paths to pre-trained models
+        binary_model_path = '../Classificadores/ModelosTreinados/xgboostBinary_model.pkl'
+        multi_model_path = '../Classificadores/ModelosTreinados/xgboostMulti_model.pkl'
+        effnet_binary_weights_path = '../Classificadores/ModelosTreinados/Effnet_Binary_Weights.pth'
+        effnet_multi_weights_path = '../Classificadores/ModelosTreinados/Effnet_Multi_Weights.pth'
+
+        # Load binary and multi-class models
+        model_binario = load(binary_model_path)
+        model_multiclasse = load(multi_model_path)
+
+        # Predictions using the binary and multi-class models
+        previsao_binario = model_binario.predict(entrada)[0]
+        previsao_multiclasse = model_multiclasse.predict(entrada)[0]
+
+        # Load neural network weights
+        model_binary = models.efficientnet_b0(pretrained=False)
+        model_binary.classifier = torch.nn.Sequential(
+            torch.nn.Dropout(p=0.2, inplace=True),
+            torch.nn.Linear(model_binary.classifier[1].in_features, 1)
+        )
+        state_dict = torch.load(effnet_binary_weights_path, map_location=torch.device('cpu'))
+        new_state_dict = {}
+        for key, value in state_dict.items():
+            new_key = key.replace("classifier.1.1", "classifier.1")
+            new_state_dict[new_key] = value
+        model_binary.load_state_dict(new_state_dict)
+        model_binary.eval()
+
+        model_multi = models.efficientnet_b0(pretrained=False)
+        model_multi.classifier = torch.nn.Sequential(
+            torch.nn.Dropout(p=0.2, inplace=True),
+            torch.nn.Linear(model_multi.classifier[1].in_features, 6)  # Number of classes in your model
+        )
+        state_dict = torch.load(effnet_multi_weights_path, map_location=torch.device('cpu'))
+        new_state_dict = {}
+        for key, value in state_dict.items():
+            new_key = key.replace("classifier.1.1", "classifier.1")
+            new_state_dict[new_key] = value
+        model_multi.load_state_dict(new_state_dict)
+        model_multi.eval()
+
+        # Preprocess the image for neural network models
+        preprocessed_image = InterfaceUtils.preprocess_image(image)
+
+        # Binary model prediction
+        with torch.no_grad():
+            prediction_binary = torch.sigmoid(model_binary(preprocessed_image)).item()
+            # Convert the probability into a binary prediction
+            prediction_binary = 1 if prediction_binary >= 0.5 else 0
+
+        # Multi-class model prediction
+        with torch.no_grad():
+            output_multi = model_multi(preprocessed_image)
+            prediction_multi = torch.argmax(output_multi, dim=1).item()
+
+        return {
+            "previsao_binario_modelo_xgboost": previsao_binario,
+            "previsao_multiclasse_modelo_xgboost": previsao_multiclasse,
+            "previsao_binario_modelo_effnet": prediction_binary,
+            "previsao_multiclasse_modelo_effnet": prediction_multi
+        }
+
 
 

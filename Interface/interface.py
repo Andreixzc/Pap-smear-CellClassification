@@ -211,7 +211,7 @@ class UI(QMainWindow):
         global currentImg
         global dataset
         img = cv2.imread(dataset[currentImg])
-        result = interface.predict(img, dataset[currentImg])
+        result = interface.predict2(img, dataset[currentImg])
         previsao_binario = result["previsao_binario_modelo_xgboost"]
         previsao_multiclasse = result["previsao_multiclasse_modelo_xgboost"]
         prediction_binary = result["previsao_binario_modelo_effnet"]
@@ -249,6 +249,13 @@ class UI(QMainWindow):
         histogramaColorido2D = interface.colorHistogram(original_image_path)
 
     def load_image(self, image_path):
+        table = self.tables["tableChannel_2"]
+        if table:
+            table.setItem(0, 0, None)  # EFF NET 2
+            table.setItem(1, 0, None)   # EFF NET 6
+            table.setItem(2, 0, None)   # XGBOOST
+            table.setItem(3, 0, None)  # XGBOOST 6
+        
         imagemOriginal = cv2.imread(image_path)
         self.groupBoxImages.setTitle(image_path)
         
