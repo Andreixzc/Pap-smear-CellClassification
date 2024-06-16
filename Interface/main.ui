@@ -850,6 +850,12 @@
       </property>
      </widget>
     </widget>
+    <zorder>centralwidget</zorder>
+    <zorder>tableChannel</zorder>
+    <zorder>groupBoxImages</zorder>
+    <zorder>groupMatrixAll</zorder>
+    <zorder>grayscaleHistogram</zorder>
+    <zorder>hsvHistogram</zorder>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

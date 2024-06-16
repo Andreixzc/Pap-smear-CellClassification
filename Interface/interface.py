@@ -113,6 +113,7 @@ class UI(QMainWindow):
 
 
     def predictClass(self):
+        print("suicidio")
         global currentImg
         img = cv2.imread(currentImg)
         result = interface.predict(img, currentImg)
@@ -343,6 +344,7 @@ class UI(QMainWindow):
 
 
     def zoom_out(self):
+        print("????????")
         self.grayscaleImageView.scale(0.95, 0.95)
         self.originalImageView.scale(0.95, 0.95)
 
