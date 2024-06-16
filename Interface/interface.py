@@ -175,6 +175,32 @@ class UI(QMainWindow):
         currentImg = (currentImg+1) % len(dataset)
         print(f"imagem da vez: {dataset[currentImg]}")
         self.load_image(dataset[currentImg])
+    
+
+
+    def multiClassMapping(valor):
+        dicionario = {
+            1: "ASC-H",
+            2: "ASC-US",
+            3: "HSIL",
+            4: "LSIL",
+            5: "NEGATIVE",
+            6: "SCC"
+        }
+        if valor in dicionario:
+            return dicionario[valor]
+        else:
+            return "Valor não encontrado"
+        
+    def binaryMapping(valor):
+        dicionario = {
+            0: "NEGATIVE",
+            1: "POSITIVE"
+        }
+        if valor in dicionario:
+            return dicionario[valor]
+        else:
+            return "Valor não encontrado"
 
     def previousImage(self):
         global currentImg
