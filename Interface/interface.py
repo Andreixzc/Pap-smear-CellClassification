@@ -160,8 +160,8 @@ class UI(QMainWindow):
         png_files = []
         for root, dirs, files in os.walk(dataset_path):
             for file in files:
-                if file.endswith('.png'):
-                    png_files.append(os.path.join(root, file))
+                if file.lower().endswith('.png'):  # case-insensitive check
+                    png_files.append(os.path.normpath(os.path.join(root, file)))
         # files = [f for f in os.listdir(dataset_path) if os.path.isfile(os.path.join(dataset_path, f))]
         # for file in files:
         #     print(dataset_path +"/"+ file)
