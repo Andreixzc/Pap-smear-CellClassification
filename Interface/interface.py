@@ -222,10 +222,14 @@ class UI(QMainWindow):
         # Update tableChannel_2 with the predictions
         table = self.tables["tableChannel_2"]
         if table:
-            table.setItem(0, 0, QTableWidgetItem(str(prediction_binary)))  # EFF NET 2
-            table.setItem(1, 0, QTableWidgetItem(str(prediction_multi)))   # EFF NET 6
-            table.setItem(2, 0, QTableWidgetItem(str(previsao_binario)))   # XGBOOST
-            table.setItem(3, 0, QTableWidgetItem(str(previsao_multiclasse)))  # XGBOOST 6
+            table.setItem(0, 0, QTableWidgetItem(self.binaryMapping(prediction_binary)))  # EFF NET 2
+            table.setItem(1, 0, QTableWidgetItem(self.multiClassMapping(prediction_multi)))   # EFF NET 6
+            table.setItem(2, 0, QTableWidgetItem(self.binaryMapping(previsao_binario)))   # XGBOOST
+            table.setItem(3, 0, QTableWidgetItem(self.multiClassMapping(previsao_multiclasse)))  # XGBOOST 6
+            # table.setItem(0, 0, QTableWidgetItem(str(prediction_binary)))  # EFF NET 2
+            # table.setItem(1, 0, QTableWidgetItem(str(prediction_multi)))   # EFF NET 6
+            # table.setItem(2, 0, QTableWidgetItem(str(previsao_binario)))   # XGBOOST
+            # table.setItem(3, 0, QTableWidgetItem(str(previsao_multiclasse)))  # XGBOOST 6
 
 
     
