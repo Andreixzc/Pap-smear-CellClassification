@@ -4,6 +4,7 @@ import torchvision.models as models
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 from PIL import Image
 import pandas as pd
 import os
@@ -44,6 +45,7 @@ transform = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
+    transforms.RandomHorizontalFlip(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
@@ -63,18 +65,22 @@ test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
 model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.IMAGENET1K_V1)
 
 # Modifique a camada final do modelo para se ajustar ao número de classes no seu dataset (binário)
-model.classifier[1] = nn.Linear(model.classifier[1].in_features, 1)
+# model.classifier[1] = nn.Linear(model.classifier[1].in_features, 1)
+model.classifier[1] = nn.Sequential(
+    nn.Linear(model.classifier[1].in_features, 1),
+    nn.Sigmoid()  # Aplica a função sigmoide ao output
+)
 
 # Defina o dispositivo para treinamento (GPU ou CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 # Defina o otimizador e a função de perda
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.0005)
 criterion = nn.BCEWithLogitsLoss()
 
 # Função para treinar o modelo
-def train_model(model, train_loader, test_loader, criterion, optimizer, num_epochs=10, save_path='Effnet_Binary_Weights.pth'):
+def train_model(model, train_loader, test_loader, criterion, optimizer, num_epochs=20, save_path='Effnet_Binary_Weights.pth'):
     train_acc_history = []
     test_acc_history = []
 
@@ -131,7 +137,7 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, num_epoc
     return train_acc_history, test_acc_history
 
 # Treine o modelo
-train_acc_history, test_acc_history = train_model(model, train_loader, test_loader, criterion, optimizer, num_epochs=10, save_path='../../ModelosTreinados/Effnet_Binary_Weights.pth')
+train_acc_history, test_acc_history = train_model(model, train_loader, test_loader, criterion, optimizer, num_epochs=20, save_path='../../ModelosTreinados/Effnet_Binary_Weights.pth')
 
 # Função para avaliar o modelo e plotar a matriz de confusão
 def evaluate_model(model, test_loader):
