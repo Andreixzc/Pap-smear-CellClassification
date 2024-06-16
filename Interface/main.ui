@@ -213,12 +213,25 @@
        <string>Zoom out</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="nextImageButton">
+     <widget class="QPushButton" name="previousImage">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>490</y>
-        <width>351</width>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Previous Image</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nextImage">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>490</y>
+        <width>141</width>
         <height>71</height>
        </rect>
       </property>
