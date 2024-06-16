@@ -1,2 +1,0 @@
-Linux com conda: (Só se quiser rodar o modelo)
-conda install pytorch torchvision torchaudio cpuonly -c pytorch
