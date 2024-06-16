@@ -190,9 +190,9 @@
      <widget class="QPushButton" name="zoomInButton">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>300</x>
         <y>490</y>
-        <width>131</width>
+        <width>191</width>
         <height>31</height>
        </rect>
       </property>
@@ -203,9 +203,9 @@
      <widget class="QPushButton" name="zoomOutButton">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>300</x>
         <y>530</y>
-        <width>131</width>
+        <width>191</width>
         <height>31</height>
        </rect>
       </property>
@@ -229,7 +229,7 @@
      <widget class="QPushButton" name="nextImageButton">
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>150</x>
         <y>490</y>
         <width>141</width>
         <height>71</height>
@@ -763,7 +763,7 @@
      <widget class="QTableWidget" name="tableChannel_2">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>310</x>
         <y>600</y>
         <width>191</width>
         <height>191</height>
@@ -806,7 +806,7 @@
      <widget class="QPushButton" name="predictButton">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>310</x>
         <y>750</y>
         <width>191</width>
         <height>41</height>
@@ -814,6 +814,32 @@
       </property>
       <property name="text">
        <string>Prever instância</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="classifiers">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>600</y>
+        <width>291</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>About XGBoost</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="classifiers_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>700</y>
+        <width>291</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>About EffNet</string>
       </property>
      </widget>
     </widget>
@@ -878,7 +904,7 @@
      <x>0</x>
      <y>0</y>
      <width>1302</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuImport">

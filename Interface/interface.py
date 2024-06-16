@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QProgressBar, QVBoxLayout, QFileDialog, QMainWindow, QMessageBox, QPushButton, QTableWidget, QTableWidgetItem, QGraphicsScene
+from PyQt6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QLabel, QProgressBar, QVBoxLayout, QFileDialog, QMainWindow, QMessageBox, QPushButton, QTableWidget, QTableWidgetItem, QGraphicsScene, QWidget
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt, QTimer, QSize
 from PyQt6 import uic
@@ -67,8 +67,48 @@ class ProgressDialog(QDialog):
         super().accept()
         QMessageBox.information(self, "Success", "Dataset loaded successfully")
 
+class XGboostWindow(QMainWindow):
+    def __init__(self):
+        super(XGboostWindow, self).__init__()
+        # Load UI File
+        uic.loadUi("xgboost.ui", self)
+        self.matbin = self.findChild(QLabel, 'label')
+        self.matsen = self.findChild(QLabel, 'label_2')
+        self.accbin = self.findChild(QLabel, 'label_3')
+        self.accsen = self.findChild(QLabel, 'label_4')
 
+        pixmap_matbin = QPixmap('../Classificadores/XGB/Binary/Desempenho/confusion_matrix.png')
+        pixmap_matsen = QPixmap('../Classificadores/XGB/MultiClass/Desempenho/confusion_matrix.png')
+        pixmap_accbin = QPixmap('../Classificadores/XGB/Binaray/Desempenho/confusion_matrix.png')
+        pixmap_accsen = QPixmap('../Classificadores/XGB/MultiClass/Desempenho/confusion_matrix.png')
 
+        # Set the images to the labels
+        self.matbin.setPixmap(pixmap_matbin)
+        self.matsen.setPixmap(pixmap_matsen)
+        self.accbin.setPixmap(pixmap_accbin)
+        self.accsen.setPixmap(pixmap_accsen)
+
+class EffnetWindow(QMainWindow):
+    def __init__(self):
+        super(EffnetWindow, self).__init__()
+        # Load UI File
+        uic.loadUi("effnet.ui", self)
+        self.matbin = self.findChild(QLabel, 'label')
+        self.matsen = self.findChild(QLabel, 'label_2')
+        self.accbin = self.findChild(QLabel, 'label_3')
+        self.accsen = self.findChild(QLabel, 'label_4')
+
+        pixmap_matbin = QPixmap('../Classificadores/CNN/Binary/Desempenho/confusion_matrix.png')
+        pixmap_matsen = QPixmap('../Classificadores/CNN/MultiClass/Desempenho/confusion_matrix.png')
+        pixmap_accbin = QPixmap('../Classificadores/CNN/Binaray/Desempenho/confusion_matrix.png')
+        pixmap_accsen = QPixmap('../Classificadores/CNN/MultiClass/Desempenho/confusion_matrix.png')
+
+        # Set the images to the labels
+        self.matbin.setPixmap(pixmap_matbin)
+        self.matsen.setPixmap(pixmap_matsen)
+        self.accbin.setPixmap(pixmap_accbin)
+        self.accsen.setPixmap(pixmap_accsen)
+        
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
@@ -85,12 +125,16 @@ class UI(QMainWindow):
 
         self.nextImageButton = self.findChild(QPushButton, 'nextImageButton')
         self.previousImageButton = self.findChild(QPushButton, 'previousImageButton')
+        self.classifier_xgboost = self.findChild(QPushButton, 'classifiers')
+        self.classifier_effnet = self.findChild(QPushButton, 'classifiers_2')
 
         # Connect buttons to methods
         self.zoomInButton.clicked.connect(self.zoom_in)
         self.zoomOutButton.clicked.connect(self.zoom_out)
         self.nextImageButton.clicked.connect(self.nextImage)
         self.previousImageButton.clicked.connect(self.previousImage)
+        self.classifier_xgboost.clicked.connect(self.show_classifiers_xgboost)
+        self.classifier_effnet.clicked.connect(self.show_classifiers_effnet)
 
         # Connect buttons to methods
         self.zoomInButton.clicked.connect(self.zoom_in)
@@ -117,7 +161,13 @@ class UI(QMainWindow):
         self.predictButton.clicked.connect(self.predictClass)
         self.show()
 
-
+    def show_classifiers_xgboost(self):
+        self.xgboost_window = XGboostWindow()
+        self.xgboost_window.show()
+    
+    def show_classifiers_effnet(self):
+        self.effnet_window = EffnetWindow()
+        self.effnet_window.show()
 
     def nextImage(self):
         global currentImg
