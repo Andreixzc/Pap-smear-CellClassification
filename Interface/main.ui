@@ -213,7 +213,7 @@
        <string>Zoom out</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="previousImage">
+     <widget class="QPushButton" name="previousImageButton">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -226,7 +226,7 @@
        <string>Previous Image</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="nextImage">
+     <widget class="QPushButton" name="nextImageButton">
       <property name="geometry">
        <rect>
         <x>160</x>

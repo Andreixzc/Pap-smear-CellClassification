@@ -10,6 +10,7 @@ from InterfaceUtils import InterfaceUtils
 from matplotlib import pyplot as plt
 
 interface = InterfaceUtils()
+currentImg = ""
 
 class ProgressDialog(QDialog):
     def __init__(self, parent=None):
@@ -65,7 +66,7 @@ class ProgressDialog(QDialog):
         super().accept()
         QMessageBox.information(self, "Success", "Dataset loaded successfully")
 
-currentImg = ""
+
 
 class UI(QMainWindow):
     def __init__(self):
@@ -80,6 +81,15 @@ class UI(QMainWindow):
         self.zoomOutButton = self.findChild(QPushButton, 'zoomOutButton')
         self.originalImageLabel = self.findChild(QLabel, 'originalImageLabel')
         self.grayscaleImageLabel = self.findChild(QLabel, 'greyscaleImageLabel')
+
+        self.nextImageButton = self.findChild(QPushButton, 'nextImageButton')
+        self.previousImageButton = self.findChild(QPushButton, 'previousImageButton')
+
+        # Connect buttons to methods
+        self.zoomInButton.clicked.connect(self.zoom_in)
+        self.zoomOutButton.clicked.connect(self.zoom_out)
+        self.nextImageButton.clicked.connect(self.nextImage)
+        self.previousImageButton.clicked.connect(self.previousImage)
 
         # Connect buttons to methods
         self.zoomInButton.clicked.connect(self.zoom_in)
@@ -106,11 +116,13 @@ class UI(QMainWindow):
         self.predictButton.clicked.connect(self.predictClass)
         self.show()
 
-    # def predictClass(self):
-    #     print(currentImg)
-    #     img = cv2.imread(currentImg)
-    #     print(interface.predict(img,currentImg))
 
+
+    def nextImage(self):
+        print("Next Image")
+
+    def previousImage(self):
+        print("Previous Image")
 
     def predictClass(self):
         global currentImg
