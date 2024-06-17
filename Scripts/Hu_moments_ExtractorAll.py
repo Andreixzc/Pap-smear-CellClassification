@@ -4,16 +4,14 @@ import csv
 import os
 
 # Este código extrai todos os hu moments do dataset na pasta especificada, e salva em um arquivo csv.
-#  Temos que modificar esse código pra que ele extraia os hu moments de uma única imagem, pra mostrar na interface, e jogar nos 
-#  classificadores XGB.
+# Temos que modificar esse código pra que ele extraia os hu moments de uma única imagem, pra mostrar na interface, e jogar nos
+# classificadores XGB.
 
-# Lembrar de para cada imagem, gerar dois 'vetores', um para partindo do pressuposto da imagem ter multi classes 
+# Lembrar de para cada imagem, gerar dois 'vetores', um para partindo do pressuposto da imagem ter multi classes
 # e o outro para a imagem ter apenas duas classes (binário).
 
-# Labels: ASC-H, ASC-US, HSIL, LSIL,  SCC, e intraepithelial lesion
+# Labels: ASC-H, ASC-US, HSIL, LSIL, SCC, e intraepithelial lesion
 # Labels binárias: 0 = intraepithelial lesion, 1 = demais.
-
-
 
 
 def calculate_hu_moments(image):
@@ -28,9 +26,11 @@ def calculate_hu_moments(image):
     moments = cv2.moments(gray_image)
     hu_moments = cv2.HuMoments(moments)
     # Fazendo a escala logarítmica dos momentos para torná-los invariantes à escala
-    hu_moments = -np.sign(hu_moments) * np.log(np.abs(hu_moments))
+    epsilon = 1e-10  # Um pequeno valor para substituir zeros
+    hu_moments = -np.sign(hu_moments) * np.log(np.abs(hu_moments) + epsilon)
 
     return hu_moments.flatten()
+
 
 def calculate_hsv_moments(image):
     # Convertendo a imagem para o espaço de cores HSV
@@ -49,10 +49,17 @@ def calculate_hsv_moments(image):
 
 instancesCount = 0
 data = []
-basePath = '28-05-2024/'
-labels  = ['ASC-H', 'ASC-US', 'HSIL', 'LSIL', 'Negative for intraepithelial lesion', 'SCC']
+basePath = "28-05-2024/"
+labels = [
+    "ASC-H",
+    "ASC-US",
+    "HSIL",
+    "LSIL",
+    "Negative for intraepithelial lesion",
+    "SCC",
+]
 num_moments = 28
-csv_columns = [f'hu_moment_{i}' for i in range(1, num_moments + 1)] + ['label']
+csv_columns = [f"hu_moment_{i}" for i in range(1, num_moments + 1)] + ["label"]
 
 for label in labels:
     label_path = os.path.join(basePath, label)
@@ -62,12 +69,14 @@ for label in labels:
         if image is not None:
             gray_hu_moments = calculate_hu_moments(image)
             hsv_hu_moments = calculate_hsv_moments(image)
-            grey_hsv_hu_moments = np.concatenate((gray_hu_moments, hsv_hu_moments))
+            grey_hsv_hu_moments = np.concatenate(
+                (gray_hu_moments, hsv_hu_moments)
+            )
             row_data = list(grey_hsv_hu_moments) + [label]
             data.append(row_data)
             instancesCount += 1
 
-with open('hu_moments.csv', mode='w', newline='') as file:
+with open("hu_moments.csv", mode="w", newline="") as file:
     writer = csv.writer(file)
     writer.writerow(csv_columns)
     writer.writerows(data)
