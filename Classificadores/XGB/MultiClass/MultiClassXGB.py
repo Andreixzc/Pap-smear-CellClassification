@@ -32,45 +32,21 @@ class_counts_before = Counter(encoded_labels)
 for class_name, count in zip(label_encoder.classes_, class_counts_before.values()):
     print(f"{class_name}: {count} instances")
 
+# Create directories if they do not exist
+output_dir = 'Desempenho'
+os.makedirs(output_dir, exist_ok=True)
+
 # Plot and save class distribution before oversampling
 plt.figure(figsize=(10, 7))
 sns.barplot(x=list(class_counts_before.keys()), y=list(class_counts_before.values()))
 plt.title('Class Distribution Before Oversampling')
 plt.xlabel('Class')
 plt.ylabel('Frequency')
-plt.savefig('Desempenho/class_distribution_before.png')
+plt.savefig(os.path.join(output_dir, 'class_distribution_before.png'))
 plt.close()
 
-# Apply SMOTE to balance the classes
-smoteRatio = 1
-
-sampling_strategy = {
-    0: 500,  # Example class 0
-    1: 500,   # Example class 1
-    2: 500,   # Example class 2
-    3: 500,   # Example class 3
-    4: 902,   # Example class 4
-    5: 500    # Example class 5
-}
-currentDistribution = {
-    0: 341,   # ASC-H
-    1: 126,   # ASC-US
-    2: 321,   # HSIL
-    3: 388,   # LSIL
-    4: 902,   # Negative for intraepithelial lesion
-    5: 43     # SCC
-}
-
-def calculateNewDistribution(currentDistribution, smoteRatio, majorityClass):
-    newDistribution = {}
-    for key in sampling_strategy:
-        if key != majorityClass:
-            newDistribution[key] = int(sampling_strategy[key] * smoteRatio) + currentDistribution[key]
-            if newDistribution[key] > sampling_strategy[majorityClass]:
-                newDistribution[key] = sampling_strategy[majorityClass]
-    return newDistribution
-
-smote = SMOTE(random_state=42, k_neighbors=2, sampling_strategy=calculateNewDistribution(currentDistribution, smoteRatio, 4))
+# Apply SMOTE to balance the classes with 'auto' strategy
+smote = SMOTE(random_state=42, k_neighbors=2, sampling_strategy='auto')
 X_resampled, y_resampled = smote.fit_resample(features, encoded_labels)
 
 # Count instances per class after resampling
@@ -85,7 +61,7 @@ sns.barplot(x=list(class_counts_after.keys()), y=list(class_counts_after.values(
 plt.title('Class Distribution After Oversampling')
 plt.xlabel('Class')
 plt.ylabel('Frequency')
-plt.savefig('Desempenho/class_distribution_after.png')
+plt.savefig(os.path.join(output_dir, 'class_distribution_after.png'))
 plt.close()
 
 # Split the resampled data into training and testing sets
@@ -115,15 +91,21 @@ conf_matrix = confusion_matrix(y_test, y_pred)
 print(conf_matrix)
 
 # Save the accuracy to a text file
-with open('Desempenho/accuracy.txt', 'w') as f:
+with open(os.path.join(output_dir, 'accuracy.txt'), 'w') as f:
     f.write(f"Accuracy: {accuracy}\n")
+
+# Update label names
+label_names = list(label_encoder.classes_)
+label_names[label_names.index('Negative for intraepithelial lesion')] = 'negative'
 
 # Plot and save the confusion matrix
 plt.figure(figsize=(10, 7))
-cm_display = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=label_encoder.classes_)
+cm_display = ConfusionMatrixDisplay(confusion_matrix=conf_matrix, display_labels=label_names)
 cm_display.plot(cmap=plt.cm.Blues, values_format='d')
 plt.title('Confusion Matrix')
-plt.savefig('Desempenho/confusion_matrix.png')
+plt.savefig(os.path.join(output_dir, 'confusion_matrix.png'))
 
 # Save the trained model to a pkl file
-dump(classifier, '../../ModelosTreinados/xgboostMulti_model.pkl')
+model_dir = '../../ModelosTreinados'
+os.makedirs(model_dir, exist_ok=True)
+dump(classifier, os.path.join(model_dir, 'xgboostMulti_model.pkl'))
